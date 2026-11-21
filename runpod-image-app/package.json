@@ -1,0 +1,15 @@
+{
+  "name": "runpod-image-app",
+  "version": "1.0.0",
+  "description": "RunPod上のComfyUIを、ノードを触らずにフォームから使うかんたん画像生成Webアプリ（外部依存なし）",
+  "private": true,
+  "type": "module",
+  "main": "server.js",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  }
+}

@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>RunPod かんたん画像生成</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <h1>RunPod かんたん画像生成</h1>
+    <p class="lead">RunPodのComfyUIを、ノードを触らずにフォームだけで使えます。各設定の下に「どのくらいが良いか」の目安が出ます。</p>
+    <nav class="toc" aria-label="ページ内リンク">
+      <a href="#guide">使い方</a>
+      <a href="#connection">接続</a>
+      <a href="#generate">生成</a>
+      <a href="#history">履歴</a>
+      <a href="#trouble">困ったとき</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 使い方 -->
+    <section id="guide" class="card">
+      <details open>
+        <summary><h2>はじめに：使い方</h2></summary>
+        <ol class="steps-list">
+          <li>RunPodで <strong>ComfyUI のテンプレート</strong>を選んでPodを <strong>Deploy</strong> します。</li>
+          <li>Podが「Running」になったら <strong>Connect</strong> を押します。</li>
+          <li>ポート <strong>8188</strong>（HTTP Service）のURLをコピーします。<br><span class="muted">例：https://abc123xyz-8188.proxy.runpod.net</span></li>
+          <li>下の「1. 接続」にURL（またはPod ID）を貼って <strong>接続テスト</strong> を押します。</li>
+          <li>モデルを選び、プロンプトを書いて <strong>生成</strong>。迷ったらプリセット「まずはこれ（おすすめ）」を押してください。</li>
+        </ol>
+        <ul class="notes">
+          <li><strong>Podを止めると課金が止まります。</strong>使い終わったらRunPodの画面でStop（またはTerminate）してください。Stopでも保存領域（ディスク）の料金は少しかかり、Terminateすると Pod上の画像も消えます。</li>
+          <li><strong>PodのURLは秘密扱いに。</strong>URLを知っている人は誰でもあなたのPod（GPU）を使えてしまいます。人に見せたり、SNSに貼ったりしないでください。</li>
+          <li><strong>パスワードは保存されません。</strong>接続情報はこのアプリのサーバーのメモリ上だけに置かれ、ファイルにもブラウザにも保存されません（サーバーを止めると消えます）。</li>
+        </ul>
+      </details>
+    </section>
+
+    <!-- 1. 接続 -->
+    <section id="connection" class="card">
+      <h2>1. 接続</h2>
+
+      <div class="field">
+        <label for="conn-url">PodのURL または Pod ID</label>
+        <input id="conn-url" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false"
+               placeholder="https://xxxxxx-8188.proxy.runpod.net または xxxxxx">
+        <p class="help">RunPodの「Connect」に出るポート8188のURLを貼ります。Pod IDだけでもOK（自動で8188のURLにします）。</p>
+      </div>
+
+      <details class="auth">
+        <summary>ユーザー名・パスワード（Podに認証をかけている場合のみ）</summary>
+        <div class="grid-2">
+          <div class="field">
+            <label for="conn-user">ユーザー名</label>
+            <input id="conn-user" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="conn-pass">パスワード</label>
+            <input id="conn-pass" type="password" autocomplete="new-password">
+          </div>
+        </div>
+        <p class="help">ここに入れた値は保存されません。ページを開き直したら入れ直してください。</p>
+      </details>
+
+      <div class="actions">
+        <button id="btn-test" type="button">接続テスト</button>
+      </div>
+      <p id="conn-result" class="result" role="status" aria-live="polite"></p>
+
+      <div class="field">
+        <label for="model-select">モデル（チェックポイント）</label>
+        <div class="row">
+          <select id="model-select">
+            <option value="">（接続テストのあとに読み込みます）</option>
+          </select>
+          <button id="btn-models" type="button" class="secondary">再読み込み</button>
+        </div>
+        <label for="model-manual" class="sub-label">一覧に出ない・読み込めない場合は手入力（入力があればこちらを優先）</label>
+        <input id="model-manual" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+               placeholder="例：sd_xl_base_1.0.safetensors">
+        <div class="guide" data-guide="model"></div>
+      </div>
+    </section>
+
+    <!-- 2〜5. 生成 -->
+    <section id="generate" class="card">
+      <h2>2. 生成の設定</h2>
+
+      <div class="presets">
+        <p class="preset-title">プリセット（押すと下の設定がまとめて変わります）</p>
+        <div class="preset-buttons">
+          <button type="button" class="preset" data-preset="recommended">まずはこれ（おすすめ）</button>
+          <button type="button" class="preset" data-preset="fast">速く試す</button>
+          <button type="button" class="preset" data-preset="quality">じっくり高品質</button>
+          <button type="button" class="preset" data-preset="faithful">プロンプトに忠実に</button>
+        </div>
+        <p id="preset-reason" class="preset-reason" aria-live="polite"></p>
+      </div>
+
+      <div class="field">
+        <label for="positive">プロンプト（作りたい絵）</label>
+        <textarea id="positive" rows="4" spellcheck="false"
+                  placeholder="例：a cat sitting on a windowsill, soft morning light, watercolor, highly detailed"></textarea>
+        <div class="guide" data-guide="positive"></div>
+      </div>
+
+      <div class="field">
+        <label for="negative">ネガティブプロンプト（出てほしくないもの）</label>
+        <textarea id="negative" rows="3" spellcheck="false"
+                  placeholder="例：lowres, blurry, bad anatomy, extra fingers, watermark, text"></textarea>
+        <div class="guide" data-guide="negative"></div>
+      </div>
+
+      <fieldset class="field">
+        <legend>サイズ（幅×高さ）</legend>
+        <div class="size-presets" role="group" aria-label="サイズのプリセット">
+          <button type="button" class="size-preset" data-w="1024" data-h="1024">1024×1024<small>正方形</small></button>
+          <button type="button" class="size-preset" data-w="1216" data-h="832">1216×832<small>横長</small></button>
+          <button type="button" class="size-preset" data-w="832" data-h="1216">832×1216<small>縦長</small></button>
+          <button type="button" class="size-preset" data-w="1344" data-h="768">1344×768<small>ワイド</small></button>
+          <button type="button" class="size-preset" data-w="768" data-h="1344">768×1344<small>縦ワイド</small></button>
+          <button type="button" class="size-preset" data-w="512" data-h="512">512×512<small>小・SD1.5向け</small></button>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="width">幅（px）</label>
+            <input id="width" type="number" min="256" max="2048" step="8" value="1024" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label for="height">高さ（px）</label>
+            <input id="height" type="number" min="256" max="2048" step="8" value="1024" inputmode="numeric">
+          </div>
+        </div>
+        <div class="guide" data-guide="size"></div>
+      </fieldset>
+
+      <div class="field">
+        <label for="steps">Steps（描き込み回数）：<output id="steps-value" for="steps">25</output></label>
+        <input id="steps" type="range" min="1" max="100" step="1" value="25">
+        <div class="guide" data-guide="steps"></div>
+      </div>
+
+      <div class="field">
+        <label for="cfg">CFG（プロンプトに従う強さ）：<output id="cfg-value" for="cfg">5.0</output></label>
+        <input id="cfg" type="range" min="1" max="20" step="0.5" value="5">
+        <div class="guide" data-guide="cfg"></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="sampler">サンプラー（描き方）</label>
+          <select id="sampler">
+            <option value="dpmpp_2m_sde">dpmpp_2m_sde（おすすめ）</option>
+            <option value="dpmpp_2m">dpmpp_2m</option>
+            <option value="euler">euler</option>
+            <option value="euler_ancestral">euler_ancestral</option>
+            <option value="ddim">ddim</option>
+            <option value="uni_pc">uni_pc</option>
+          </select>
+          <div class="guide" data-guide="sampler"></div>
+        </div>
+        <div class="field">
+          <label for="scheduler">スケジューラー（仕上げ方）</label>
+          <select id="scheduler">
+            <option value="normal">normal</option>
+            <option value="karras" selected>karras（おすすめ）</option>
+            <option value="exponential">exponential</option>
+            <option value="sgm_uniform">sgm_uniform</option>
+          </select>
+          <div class="guide" data-guide="scheduler"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="seed">シード（乱数の番号）</label>
+          <div class="row">
+            <input id="seed" type="number" min="0" step="1" value="0" inputmode="numeric" disabled>
+            <label class="check"><input id="seed-random" type="checkbox" checked> ランダム</label>
+          </div>
+          <div class="guide" data-guide="seed"></div>
+        </div>
+        <div class="field">
+          <label for="batch">枚数（一度に作る数）</label>
+          <select id="batch">
+            <option value="1" selected>1枚</option>
+            <option value="2">2枚</option>
+            <option value="3">3枚</option>
+            <option value="4">4枚</option>
+          </select>
+          <div class="guide" data-guide="batch"></div>
+        </div>
+      </div>
+
+      <div class="actions generate-actions">
+        <button id="btn-generate" type="button" class="primary">画像を生成する</button>
+      </div>
+      <p id="gen-status" class="result" role="status" aria-live="polite"></p>
+      <div id="last-seed" class="last-seed" hidden></div>
+      <div id="results" class="results"></div>
+      <p class="muted small">画像はPodの中に保存されています。Podを削除（Terminate）すると消えるので、気に入った画像は「ダウンロード」で手元に保存してください。</p>
+    </section>
+
+    <!-- 6. 履歴 -->
+    <section id="history" class="card">
+      <h2>3. 履歴（最新20件）</h2>
+      <p class="notice">履歴に残るのは設定と画像の「場所」だけです。<strong>画像そのものはPod上にあり、Podを削除すると消えます。</strong>残したい画像はダウンロードしてください。項目を押すと、その時の設定（シード含む）がフォームに戻ります。</p>
+      <ul id="history-list" class="history-list"></ul>
+      <p id="history-empty" class="muted">まだ履歴はありません。</p>
+      <div class="actions">
+        <button id="btn-clear-history" type="button" class="secondary danger">履歴を消す</button>
+      </div>
+    </section>
+
+    <!-- 7. 困ったとき -->
+    <section id="trouble" class="card">
+      <h2>困ったとき</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">こんなとき</th><th scope="col">こうする</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>ぼやける・粗い</td><td>Stepsとサイズを上げる（Steps 25前後、サイズ1024前後）</td></tr>
+            <tr><td>指示が通らない</td><td>CFGを上げる（5→7くらい）。大事な語をプロンプトの前のほうに書く</td></tr>
+            <tr><td>色がギラギラ・焦げたよう</td><td>CFGを下げる（5前後に戻す）</td></tr>
+            <tr><td>人物が2人になる・体が伸びる</td><td>サイズを1024前後に戻す</td></tr>
+            <tr><td>遅い</td><td>Stepsとサイズを下げる（枚数も1枚に）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="notes">
+        <li>「接続できません」：Podが Running か、URLがポート8188のものか確認。起動直後は数分待ってから再試行。</li>
+        <li>「モデルが見つかりません」：「再読み込み」を押して、一覧から選び直してください。</li>
+        <li>「VRAMが足りません」：サイズか枚数を下げてください。</li>
+        <li>最初の1枚はモデルの読み込みで時間がかかります（数十秒〜数分）。2枚目からは速くなります。</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>このアプリは自分のPCで個人的に使うためのものです。PodのURLは他人に教えないでください。</p>
+  </footer>
+</body>
+</html>
