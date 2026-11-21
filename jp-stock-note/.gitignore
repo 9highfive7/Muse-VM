@@ -1,0 +1,18 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# local data (SQLite DB, WAL files, backups) — J-Quants data must not be redistributed
+data/
+
+# python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# node / build output
+node_modules/
+frontend/dist/

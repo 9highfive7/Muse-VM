@@ -1,0 +1,13 @@
+{
+  "_comment": "Fixture in the measured /v2/equities/master response shape (field names from the 2026-11-21 Phase 0 run). Values are illustrative test data.",
+  "data": [
+    {"Date": "2026-11-20", "Code": "72030", "CoName": "トヨタ自動車", "CoNameEn": "TOYOTA MOTOR CORPORATION", "S17": "6", "S17Nm": "自動車・輸送機", "S33": "3700", "S33Nm": "輸送用機器", "ScaleCat": "TOPIX Core30", "Mkt": "0111", "MktNm": "プライム", "Mrgn": "2", "MrgnNm": "貸借", "ProdCat": "011"},
+    {"Date": "2026-11-24", "Code": "72030", "CoName": "トヨタ自動車（翌営業日版）", "CoNameEn": "TOYOTA MOTOR CORPORATION", "S17": "6", "S17Nm": "自動車・輸送機", "S33": "3700", "S33Nm": "輸送用機器", "ScaleCat": "TOPIX Core30", "Mkt": "0111", "MktNm": "プライム", "Mrgn": "2", "MrgnNm": "貸借", "ProdCat": "011"},
+    {"Date": "2026-11-20", "Code": "72670", "CoName": "本田技研工業", "CoNameEn": "HONDA MOTOR CO.,LTD.", "S17": "6", "S17Nm": "自動車・輸送機", "S33": "3700", "S33Nm": "輸送用機器", "ScaleCat": "TOPIX Core30", "Mkt": "0111", "MktNm": "プライム", "Mrgn": "2", "MrgnNm": "貸借", "ProdCat": "011"},
+    {"Date": "2026-11-20", "Code": "94330", "CoName": "ＫＤＤＩ", "CoNameEn": "KDDI CORPORATION", "S17": "10", "S17Nm": "情報通信・サービスその他", "S33": "5250", "S33Nm": "情報・通信業", "ScaleCat": "TOPIX Core30", "Mkt": "0111", "MktNm": "プライム", "Mrgn": "2", "MrgnNm": "貸借", "ProdCat": "011"},
+    {"Date": "2026-11-20", "Code": "87250", "CoName": "ＭＳ＆ＡＤインシュアランスグループホールディングス", "CoNameEn": "MS&AD Insurance Group Holdings,Inc.", "S17": "16", "S17Nm": "金融（除く銀行）", "S33": "7050", "S33Nm": "保険業", "ScaleCat": "TOPIX Large70", "Mkt": "0111", "MktNm": "プライム", "Mrgn": "2", "MrgnNm": "貸借", "ProdCat": "011"},
+    {"Date": "2026-11-20", "Code": "99840", "CoName": "ソフトバンクグループ", "CoNameEn": "SoftBank Group Corp.", "S17": "10", "S17Nm": "情報通信・サービスその他", "S33": "5250", "S33Nm": "情報・通信業", "ScaleCat": "TOPIX Core30", "Mkt": "0111", "MktNm": "プライム", "Mrgn": "2", "MrgnNm": "貸借", "ProdCat": "011"},
+    {"Date": "2026-11-20", "Code": "130A0", "CoName": "Ｖｅｒｉｔａｓ　Ｉｎ　Ｓｉｌｉｃｏ", "CoNameEn": "Veritas In Silico Inc.", "S17": "5", "S17Nm": "医薬品", "S33": "3250", "S33Nm": "医薬品", "ScaleCat": "-", "Mkt": "0113", "MktNm": "グロース", "Mrgn": "1", "MrgnNm": "信用", "ProdCat": "011"},
+    {"Date": "2026-11-20", "Code": "20800", "CoName": "ＰＥＴＥＲ　ＬＥＥ　１００％ファンド", "CoNameEn": "PETER_LEE 100% FUND", "S17": "99", "S17Nm": "その他", "S33": "9999", "S33Nm": "その他", "ScaleCat": "-", "Mkt": "0112", "MktNm": "スタンダード", "Mrgn": "1", "MrgnNm": "信用", "ProdCat": "011"}
+  ]
+}

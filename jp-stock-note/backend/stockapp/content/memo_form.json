@@ -1,0 +1,203 @@
+{
+  "_comment": "判断メモの入力フォーム定義（要件 3.10）。区分・根拠・自己評価の選択肢はすべて利用者が選ぶもので、アプリは初期選択も提案もしない。禁止語テストの対象。",
+  "notice": "このメモは自分の判断過程の記録であり、アプリは内容を評価しません。",
+  "immutability_note": "保存したメモは編集・削除できません。書き直すと同じメモの新しいリビジョンとして追記され、以前のリビジョンもそのまま読めます。保存時点の画面の主な数値はスナップショットとして記録され、後から書き換えられません。",
+  "stance": {
+    "label": "区分（自分の記録）",
+    "help": "いまの自分の立場を自分で選びます。アプリは区分を提案せず、初期選択もしません。",
+    "options": [
+      {
+        "key": "watch",
+        "label": "監視"
+      },
+      {
+        "key": "hold",
+        "label": "保有"
+      },
+      {
+        "key": "pass",
+        "label": "見送り"
+      }
+    ]
+  },
+  "evidence": {
+    "label": "根拠チェックリスト（確認した項目と所見）",
+    "help": "このアプリの画面で確認した項目に印を付け、所見を短く書きます。チャート・財務・市場環境の3分野それぞれ1項目以上が必要です。",
+    "note_max_len": 300,
+    "areas": [
+      {
+        "key": "chart",
+        "label": "チャート",
+        "items": [
+          {
+            "key": "card.price_position",
+            "label": "価格位置カード"
+          },
+          {
+            "key": "stage1",
+            "label": "①トレンド（移動平均の配列・クロス）"
+          },
+          {
+            "key": "stage2",
+            "label": "②過熱感（RSI・ボリンジャーバンド）"
+          },
+          {
+            "key": "stage3",
+            "label": "③転換・支持抵抗（MACD・52週高値・安値）"
+          },
+          {
+            "key": "stage4",
+            "label": "④相対比較（TOPIXとの比較・ベータ）"
+          },
+          {
+            "key": "cross_history",
+            "label": "クロス発生履歴"
+          }
+        ]
+      },
+      {
+        "key": "financial",
+        "label": "財務",
+        "items": [
+          {
+            "key": "card.performance",
+            "label": "業績方向カード"
+          },
+          {
+            "key": "card.health",
+            "label": "財務健全性カード"
+          },
+          {
+            "key": "alerts",
+            "label": "確認ポイント"
+          },
+          {
+            "key": "fin.annual",
+            "label": "通期業績推移・四半期単独値"
+          },
+          {
+            "key": "fin.progress",
+            "label": "進捗率"
+          },
+          {
+            "key": "fin.revisions",
+            "label": "予想修正履歴"
+          },
+          {
+            "key": "fin.cf",
+            "label": "簡易財務・キャッシュフロー"
+          },
+          {
+            "key": "fin.valuation",
+            "label": "バリュエーション（PER・PBR・配当）"
+          }
+        ]
+      },
+      {
+        "key": "macro",
+        "label": "市場環境",
+        "items": [
+          {
+            "key": "card.valuation_macro",
+            "label": "バリュエーション・マクロ位置カード"
+          },
+          {
+            "key": "macro.topix",
+            "label": "TOPIXの推移"
+          },
+          {
+            "key": "macro.rates",
+            "label": "金利（米10年・日本10年・長短スプレッド）"
+          },
+          {
+            "key": "macro.usdjpy",
+            "label": "ドル円と短観の想定レート"
+          },
+          {
+            "key": "macro.sector",
+            "label": "業種の感応タグ"
+          }
+        ]
+      }
+    ]
+  },
+  "scenario": {
+    "label": "想定シナリオ",
+    "expected_label": "想定どおりの場合（自分が想定している展開）",
+    "different_label": "想定と異なる場合（そうならなかったときの展開）",
+    "max_len": 2000
+  },
+  "conditions": {
+    "label": "見直し条件（最低1件）",
+    "help": "どうなったらこのメモを見直すかを書きます（例：次回決算開示時、終値が75日移動平均線を下回ったとき、など）。",
+    "max_items": 10,
+    "max_len": 300,
+    "kinds": [
+      {
+        "key": "price_indicator",
+        "label": "価格・指標の条件"
+      },
+      {
+        "key": "next_earnings",
+        "label": "次回決算開示時"
+      },
+      {
+        "key": "date",
+        "label": "日付"
+      },
+      {
+        "key": "other",
+        "label": "その他"
+      }
+    ]
+  },
+  "review_date": {
+    "label": "見直し日（任意）",
+    "help": "日付を入れると、その日以降ホーム画面に「見直し日が到来」と表示されます。"
+  },
+  "self_review": {
+    "label": "振り返り（自己評価の追記）",
+    "help": "プロセス（判断の手順）と結果（その後の展開）を分けて自分で記録します。追記として保存され、元のメモとスナップショットは変わりません。アプリは評価を付けません。",
+    "process": {
+      "label": "プロセス：記録した根拠と見直し条件に沿って判断できたか",
+      "options": [
+        {
+          "key": "followed",
+          "label": "沿っていた"
+        },
+        {
+          "key": "partly",
+          "label": "一部沿っていた"
+        },
+        {
+          "key": "not_followed",
+          "label": "沿っていなかった"
+        }
+      ]
+    },
+    "result": {
+      "label": "結果：その後の展開は想定シナリオのどちらに近かったか",
+      "options": [
+        {
+          "key": "as_expected",
+          "label": "想定どおりの場合に近い"
+        },
+        {
+          "key": "different",
+          "label": "想定と異なる場合に近い"
+        },
+        {
+          "key": "unclear",
+          "label": "どちらとも言えない"
+        }
+      ]
+    },
+    "note_label": "振り返りメモ（任意）",
+    "note_max_len": 2000
+  },
+  "review_view": {
+    "title": "スナップショットと現在値の比較",
+    "note": "保存時点の値と現在の値を、同じ項目で並べています（事実の差分のみ）。損益や判断の良否は表示しません。",
+    "core_note": "終値・予想PER・自己資本比率・TOPIX・ドル円の5項目は、算出できない場合もその理由と基準日の有無を含めて必ず記録します。"
+  }
+}

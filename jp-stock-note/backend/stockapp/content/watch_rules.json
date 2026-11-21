@@ -1,0 +1,12 @@
+{
+  "_comment": "Phase 4 settings (要件 3.9 / 9.1-9). Read by stockapp.watchlist. Values marked provisional are listed in README「暫定値」.",
+  "watchlist_max": 30,
+  "watchlist_max_provisional": true,
+  "reason_max_len": 200,
+  "tags": ["決算待ち", "業績の方向確認", "金利感応の観察", "為替感応の観察", "値動きの推移確認"],
+  "volatility": {
+    "window": 60,
+    "k": 2,
+    "_note": "大引け後ダイジェスト：前営業日比の騰落率が、直前window営業日の日次騰落率の母標準偏差×kを超えたら事実として列挙する"
+  }
+}

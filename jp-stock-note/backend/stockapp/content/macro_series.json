@@ -1,0 +1,98 @@
+{
+  "_comment": "Phase 3 マクロ帯の系列定義（要件 3.8 / 4.5）。更新周期バッジ（cadence_badge）と遅れの説明（lag_note）は research-03 のFREDラグ非対称の結論（米金利=日次・米国前営業日、ドル円DEXJPUS=週次バッチで最大約1週遅れ、日本10年IRLTLT01JPM156N=OECD月次で約半月〜1か月遅れ）をそのまま反映する。時点依存の数値（金利水準など）はここに書かず、FREDの実データから出す。禁止語テストの対象。",
+  "series": {
+    "DGS10": {
+      "title": "米国10年国債利回り",
+      "short": "米10年金利",
+      "unit": "%",
+      "change_unit": "ポイント",
+      "frequency": "daily",
+      "fetch_cycle": "daily",
+      "history_years": 6,
+      "source": "FRED（米連邦準備制度理事会 H.15）",
+      "lag_note": "米国の営業日ごとの日次値。日本時間の朝には米国の前営業日分までが反映される。",
+      "cadence_badge": "日次（米国営業日）"
+    },
+    "DGS2": {
+      "title": "米国2年国債利回り",
+      "short": "米2年金利",
+      "unit": "%",
+      "change_unit": "ポイント",
+      "frequency": "daily",
+      "fetch_cycle": "daily",
+      "history_years": 6,
+      "source": "FRED（米連邦準備制度理事会 H.15）",
+      "lag_note": "米国の営業日ごとの日次値。日本時間の朝には米国の前営業日分までが反映される。長短スプレッドの計算に使う。",
+      "cadence_badge": "日次（米国営業日）"
+    },
+    "DEXJPUS": {
+      "title": "ドル円（1ドルあたりの円）",
+      "short": "ドル円",
+      "unit": "円",
+      "change_unit": "円",
+      "frequency": "daily",
+      "fetch_cycle": "daily",
+      "history_years": 6,
+      "source": "FRED（米連邦準備制度理事会 H.10、ニューヨーク正午レート）",
+      "lag_note": "値は日次だが、FREDへの反映は週1回のまとめ更新のため、最大約1週間遅れる。新しい観測がない日の取得は「変更なし」として記録する。",
+      "cadence_badge": "日次値・週次更新のため最大約1週遅れ"
+    },
+    "IRLTLT01JPM156N": {
+      "title": "日本の長期金利（10年国債利回り・月次）",
+      "short": "日本10年金利",
+      "unit": "%",
+      "change_unit": "ポイント",
+      "frequency": "monthly",
+      "fetch_cycle": "weekly",
+      "history_years": null,
+      "source": "FRED（OECD Main Economic Indicators）",
+      "lag_note": "OECDの月次系列。観測日は各月の1日で表され、公表まで約半月〜1か月遅れる。日次の値ではないため、グラフはステップ線で描き、日次に補間しない。",
+      "cadence_badge": "月次（約1か月遅れ）"
+    },
+    "IRSTCI01JPM156N": {
+      "title": "日本の短期金利（無担保コール翌日物・月次）",
+      "short": "日本短期金利（コールレート）",
+      "unit": "%",
+      "change_unit": "ポイント",
+      "frequency": "monthly",
+      "fetch_cycle": "weekly",
+      "history_years": null,
+      "source": "FRED（OECD Main Economic Indicators）",
+      "lag_note": "OECDの月次系列（Immediate rates: Call money/Interbank rate）。観測日は各月の1日で表され、公表まで約半月〜1か月遅れる。",
+      "cadence_badge": "月次（約1か月遅れ）",
+      "substitute_note": "日銀の政策金利のFRED系列（IRSTCB01）は2023年12月で更新が停止しているため、その代替として月次のコールレート系列（IRSTCI01JPM156N）を参考表示している。"
+    }
+  },
+  "derived": {
+    "US_SPREAD": {
+      "title": "米国の長短スプレッド（10年−2年）",
+      "short": "米長短スプレッド",
+      "unit": "ポイント",
+      "change_unit": "ポイント",
+      "frequency": "daily",
+      "source": "FRED DGS10 と DGS2 から算出（両方に値がある日だけ）",
+      "lag_note": "10年と2年の両方に値がある米国営業日だけで計算する。片方が休場・欠損の日は算出しない。",
+      "cadence_badge": "日次（米国営業日）"
+    }
+  },
+  "topix": {
+    "title": "TOPIX（東証株価指数）",
+    "short": "TOPIX",
+    "unit": "ポイント",
+    "source": "J-Quants /v2/indices/bars/daily/topix",
+    "lag_note": "東証の営業日ごとの終値。当日分は夜間バッチ（20時以降）で反映される。",
+    "cadence_badge": "日次（東証営業日）"
+  },
+  "direction": {
+    "_comment": "20・60観測の変化を「上昇／低下／ほぼ横ばい」と事実で書き分けるための幅（第3階層に表示する）。暫定値。",
+    "rate_flat_pt": 0.05,
+    "fx_flat_pct": 0.5,
+    "topix_flat_pct": 1.0
+  },
+  "stale": {
+    "_comment": "要件 3.8 基準日のずれ：日次系列は基準日が銘柄データ（またはTOPIX）の基準日より5営業日以上古いと強調表示。月次系列は約1か月遅れが通常のため、基準月が参照日の月より3か月以上前のときに強調表示する。",
+    "daily_business_days": 5,
+    "monthly_months": 3
+  },
+  "windows": [20, 60, 250]
+}

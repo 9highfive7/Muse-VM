@@ -1,0 +1,32 @@
+{
+  "_comment": "Phase 2 thresholds and settings (要件 3.7『閾値は設定ファイルで管理し、第3階層に明示する』, 9.1-5). Read by stockapp.fundamentals / stockapp.financials. Values marked provisional are shown as 暫定 in the API and UI.",
+  "market_cap": {
+    "unit_yen": 1000000,
+    "unit_status": "estimated",
+    "_note": "daily_bars.market_cap (MktCap) の単位。フェーズ0実測（トヨタ 44529307.0、終値3,051円）から百万円単位と推定。実データで確認するまで推定扱い（docs/api-field-mapping.md）。"
+  },
+  "alerts": {
+    "ocf_to_profit_below": 0.5,
+    "progress_deviation_pt": 15,
+    "progress_deviation_provisional": true,
+    "payout_ratio_above_pct": 100,
+    "equity_ratio_drop_pt": 5,
+    "forecast_revision_abs_pct": 10
+  },
+  "cf": {
+    "ocf_ratio_reference": 1.0,
+    "ocf_ratio_check": 0.5
+  },
+  "progress": {
+    "past_years": 3
+  },
+  "forecast_type": {
+    "landing_threshold_pct": 5,
+    "min_years": 3,
+    "max_years": 5
+  },
+  "valuation": {
+    "percentile_years": 5,
+    "min_observations": 250
+  }
+}

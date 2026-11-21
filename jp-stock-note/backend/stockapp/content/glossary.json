@@ -1,0 +1,108 @@
+{
+  "_comment": "用語のその場解説（要件 2.4）。3段：definition（平易な1文定義）／formula（表示中銘柄の実数値を代入。{name} は stockapp.technicals.glossary_values が埋める）／misconception（初心者が誤解しやすい点）。formula に必要な値が算出できない場合は formula_generic を表示する。禁止語テストの対象。",
+  "sma": {
+    "label": "単純移動平均（SMA）",
+    "definition": "過去n営業日の終値を単純に平均した値で、日々の値動きをならして推移を見やすくするもの。",
+    "formula": "25日移動平均 ＝ 直近25営業日の調整後終値の合計 {sum25}円 ÷ 25 ＝ {sma25}円（基準日：{as_of}）",
+    "formula_generic": "n日移動平均 ＝ 直近n営業日の調整後終値の合計 ÷ n（n＝5・25・75・200）",
+    "misconception": "移動平均は過去の終値の平均であり、将来の価格を示すものではない。終値が線の上か下かだけで今後の値動きは決まらない。"
+  },
+  "deviation": {
+    "label": "移動平均乖離率",
+    "definition": "終値が移動平均線からどれだけ離れているかを%で表した値。",
+    "formula": "25日乖離率 ＝ (終値 {close}円 − 25日移動平均 {sma25}円) ÷ 25日移動平均 {sma25}円 × 100 ＝ {dev25}%（基準日：{as_of}）",
+    "formula_generic": "乖離率 ＝ (終値 − n日移動平均) ÷ n日移動平均 × 100",
+    "misconception": "乖離率に決まった上限・下限はなく、どの程度を大きいとみるかは銘柄や時期によって異なる。"
+  },
+  "golden_cross": {
+    "label": "ゴールデンクロス",
+    "definition": "本アプリでは、25日移動平均線が75日移動平均線を下から上へ抜けることを指す。",
+    "formula": "前営業日：25日線 {gc_prev_s}円 ≤ 75日線 {gc_prev_l}円、発生日：25日線 {gc_s}円 ＞ 75日線 {gc_l}円（直近の発生日：{gc_date}）",
+    "formula_generic": "SMA25(t−1) ≤ SMA75(t−1) かつ SMA25(t) ＞ SMA75(t)",
+    "misconception": "移動平均から作るため、発生した時点で価格はすでに動いた後であることが多い。発生後に上昇した例も下落した例もあり、本アプリではクロス発生履歴に全件を示している。"
+  },
+  "dead_cross": {
+    "label": "デッドクロス",
+    "definition": "本アプリでは、25日移動平均線が75日移動平均線を上から下へ抜けることを指す。",
+    "formula": "前営業日：25日線 {dc_prev_s}円 ≥ 75日線 {dc_prev_l}円、発生日：25日線 {dc_s}円 ＜ 75日線 {dc_l}円（直近の発生日：{dc_date}）",
+    "formula_generic": "SMA25(t−1) ≥ SMA75(t−1) かつ SMA25(t) ＜ SMA75(t)",
+    "misconception": "移動平均から作るため、発生した時点で価格はすでに動いた後であることが多い。発生後に下落した例も上昇した例もあり、本アプリではクロス発生履歴に全件を示している。"
+  },
+  "rsi": {
+    "label": "RSI（相対力指数）",
+    "definition": "直近14営業日の値上がり幅と値下がり幅の比率から、値動きの偏りを0〜100で表した指標。",
+    "formula": "RSI ＝ 100 − 100 ÷ (1 + 平均上昇幅 {avg_u}円 ÷ 平均下落幅 {avg_d}円) ＝ {rsi}（ワイルダー方式、基準日：{as_of}）",
+    "formula_generic": "RSI ＝ 100 − 100 ÷ (1 + 平均上昇幅 ÷ 平均下落幅)。平均はワイルダー方式（初回は14個の単純平均、以後は (前回×13 ＋ 当日) ÷ 14）",
+    "misconception": "70以上・30以下という目安は慣行であり、根拠のある境界ではない。強いトレンドの間は70や30を長期間超え続けることがある。"
+  },
+  "bollinger": {
+    "label": "ボリンジャーバンド",
+    "definition": "20日移動平均を中心に、終値のばらつき（標準偏差σ）の2倍を上下に加えた帯。",
+    "formula": "+2σ ＝ 20日移動平均 {bb_mid}円 ＋ 2 × 標準偏差 {bb_sd}円 ＝ {bb_upper}円、−2σ ＝ {bb_mid}円 − 2 × {bb_sd}円 ＝ {bb_lower}円（基準日：{as_of}）",
+    "formula_generic": "±2σ ＝ 20日移動平均 ± 2 × 直近20営業日の終値の母標準偏差",
+    "misconception": "「±2σの中に約95%が収まる」という説明は値動きが正規分布に従う場合のもので、株価には当てはまらないことが多い。帯の外に出ても、その後に帯の中へ戻るとは限らない。"
+  },
+  "percent_b": {
+    "label": "%B",
+    "definition": "終値がボリンジャーバンドの帯の中のどこにあるかを示す値で、−2σで0、+2σで1になる。",
+    "formula": "%B ＝ (終値 {close}円 − 下限 {bb_lower}円) ÷ (上限 {bb_upper}円 − 下限 {bb_lower}円) ＝ {pct_b}（基準日：{as_of}）",
+    "formula_generic": "%B ＝ (終値 − 下限) ÷ (上限 − 下限)",
+    "misconception": "%Bが1を超える・0を下回るのは終値が帯の外にあるという事実を示すだけで、その後の方向を示すものではない。"
+  },
+  "macd": {
+    "label": "MACD",
+    "definition": "12日と26日の指数平滑移動平均（EMA）の差で、その9日EMAをシグナル、MACDとシグナルの差をヒストグラムと呼ぶ。",
+    "formula": "MACD ＝ 12日EMA {ema12}円 − 26日EMA {ema26}円 ＝ {macd}、シグナル（MACDの9日EMA）＝ {macd_signal}、ヒストグラム ＝ {macd} − {macd_signal} ＝ {macd_hist}（基準日：{as_of}）",
+    "formula_generic": "MACD ＝ EMA12 − EMA26、シグナル ＝ MACDの9期間EMA、ヒストグラム ＝ MACD − シグナル。EMA_n(t) ＝ α × 終値(t) ＋ (1 − α) × EMA_n(t−1)、α ＝ 2 ÷ (n ＋ 1)",
+    "misconception": "移動平均から作るため、価格の動きに遅れて反応する。12・26・9という期間は開発者が用いた慣行で、統計的に決まった値ではない。"
+  },
+  "high_low_52w": {
+    "label": "52週高値・安値",
+    "definition": "基準日から暦日364日前までの調整後高値の最高値と、調整後安値の最安値。",
+    "formula": "52週高値からの距離 ＝ 終値 {close}円 ÷ 52週高値 {h52}円 − 1 ＝ {from_high}%、レンジ内位置 ＝ (終値 {close}円 − 52週安値 {l52}円) ÷ (52週高値 {h52}円 − 52週安値 {l52}円) × 100 ＝ {range_pos}%（基準日：{as_of}）",
+    "formula_generic": "52週高値からの距離 ＝ 終値 ÷ 52週高値 − 1、レンジ内位置 ＝ (終値 − 52週安値) ÷ (52週高値 − 52週安値) × 100",
+    "misconception": "52週高値・安値は過去1年の値幅の端を示すだけで、その価格で止まる・向きが変わるという決まりはない。"
+  },
+  "beta": {
+    "label": "ベータ（β）",
+    "definition": "TOPIXの日次リターンが1%動いたときに、この銘柄の日次リターンが平均して何%動いたかを、過去の値から求めたもの。",
+    "formula": "β ＝ 日次リターンの共分散 {cov} ÷ TOPIX日次リターンの分散 {var_topix} ＝ {beta}（{beta_from}〜{beta_to}、有効な日次リターン{beta_n}件）",
+    "formula_generic": "β ＝ Cov(銘柄の日次リターン, TOPIXの日次リターン) ÷ Var(TOPIXの日次リターン)。直近250営業日、有効な観測が200件未満なら算出しない",
+    "misconception": "ベータは過去の期間で計算した値で、期間を変えると変わる。将来も同じ動き方をするとは限らない。"
+  },
+  "correlation": {
+    "label": "相関係数",
+    "definition": "この銘柄とTOPIXの日次リターンが、どの程度同じ方向に動いたかを−1〜1で表した値。",
+    "formula": "ρ ＝ 共分散 {cov} ÷ (銘柄の標準偏差 {sd_stock} × TOPIXの標準偏差 {sd_topix}) ＝ {correlation}（{beta_from}〜{beta_to}、有効な日次リターン{beta_n}件）",
+    "formula_generic": "ρ ＝ Cov(銘柄, TOPIX) ÷ (σ銘柄 × σTOPIX)。窓と条件はベータと同じ",
+    "misconception": "相関が高いことは、一方が他方の原因であることを意味しない。また相関係数は動きの大きさではなく、方向のそろい方を表す。"
+  },
+  "relative_strength": {
+    "label": "相対力ライン",
+    "definition": "銘柄の指数化値をTOPIXの指数化値で割って100を掛けた線で、TOPIXと比べた値動きの差の累積を表す。",
+    "formula": "相対力ライン ＝ 銘柄の指数化値 {idx_stock} ÷ TOPIXの指数化値 {idx_topix} × 100 ＝ {rs}（{t0}＝100、基準日：{as_of}）",
+    "formula_generic": "相対力ライン ＝ 銘柄の指数化値 ÷ TOPIXの指数化値 × 100（指数化値 ＝ 終値 ÷ 表示期間先頭の終値 × 100）",
+    "misconception": "相対力ラインはRSI（相対力指数）とは別の指標。配当を含まない価格ベースの比較である。"
+  },
+  "excess_return": {
+    "label": "超過リターン（対TOPIX）",
+    "definition": "同じ期間の銘柄の騰落率からTOPIXの騰落率を引いた差で、単位は%ポイント。",
+    "formula": "60営業日の超過リターン ＝ 銘柄 {ex60_stock}% − TOPIX {ex60_topix}% ＝ {ex60_excess}ポイント（{ex60_from}〜{ex60_to}）",
+    "formula_generic": "超過リターン ＝ 銘柄の騰落率 − TOPIXの騰落率、騰落率 ＝ 終値(t) ÷ 終値(t−n) − 1（n＝20・60・120・250営業日）",
+    "misconception": "配当を含まない価格ベースの比較であり、期間の取り方によって符号が変わることもある。"
+  },
+  "adjusted_price": {
+    "label": "調整後株価",
+    "definition": "株式分割・併合などの影響を取り除くため、過去の価格を現在の株数の基準に換算した価格。",
+    "formula": "{adj_date}の調整後終値 {adj_close_then}円 ＝ 当時の終値 {raw_close_then}円 × 累積調整係数 {adj_ratio}",
+    "formula_generic": "調整後価格 ＝ 当時の価格 × その日以後の調整係数の累積積",
+    "misconception": "分割等を調整した価格であり、当時の実際の取引価格とは異なる場合がある。"
+  },
+  "stop_high_low": {
+    "label": "ストップ高・ストップ安",
+    "definition": "1日の値幅の上限（ストップ高）または下限（ストップ安）まで価格が動いた状態で、値幅は取引所が前日の終値に応じて定めている。",
+    "formula": "保有データ期間（{stop_from}〜{stop_to}）のストップ高 {stop_up_n}日、ストップ安 {stop_down_n}日（日足データのストップ高・安フラグを集計）",
+    "formula_generic": "日足データのストップ高フラグ・ストップ安フラグが立った日を数える",
+    "misconception": "ストップ高・安の日は値幅制限により需給が価格に反映しきれていない場合がある。その日の終値を使う指標も影響を受ける。"
+  }
+}
