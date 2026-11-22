@@ -11,7 +11,7 @@ from fastapi import Body, Depends, FastAPI, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
-from . import app_settings, bars, financials, fins, fred, ingest, macro, memos, queries, technicals, watchlist
+from . import app_settings, bars, financials, fins, fred, ingest, macro, memos, queries, technical_view, technicals, watchlist
 from .config import Settings, load_settings
 from .db import connect, migrate
 from .jquants.client import JQuantsClient
@@ -129,6 +129,16 @@ def create_app(settings: Settings | None = None, client: JQuantsClient | None = 
                        conn: sqlite3.Connection = Depends(get_conn)):
         _check_code(code)
         return technicals.technicals_payload(conn, code, range)
+
+    @app.get("/api/stocks/{code}/technical-backtest")
+    def api_technical_backtest(code: str,
+                               indicator: str = Query(technical_view.DEFAULT_INDICATOR,
+                                                      pattern="^(" + "|".join(technical_view.INDICATORS) + ")$"),
+                               conn: sqlite3.Connection = Depends(get_conn)):
+        """「テクニカルで見る」: 今の評価＋この銘柄の保存済み日足全期間での単純バックテスト。
+        DB only, computed per request (~1,250 bars at most)."""
+        _check_code(code)
+        return technical_view.backtest_payload(conn, code, indicator)
 
     @app.get("/api/stocks/{code}/cards/price-position")
     def api_card_price_position(code: str, conn: sqlite3.Connection = Depends(get_conn)):

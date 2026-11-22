@@ -1,0 +1,14 @@
+/* Demo build only: the permanent sample-data banner. Neutral, static. */
+.demo-banner {
+  position: sticky; top: 0; z-index: 50;
+  background: #e8edf3; border-bottom: 2px solid #5b6b7f; color: #1a1a1a;
+  padding: 0.5rem 1rem;
+}
+.demo-banner p { max-width: 72rem; margin: 0 auto; }
+.demo-banner-lead { font-weight: 700; }
+.demo-banner-sub { font-size: 0.8125rem; color: #333; margin-top: 0.125rem !important; }
+.demo-banner-blocked {
+  margin-top: 0.375rem !important; padding: 0.375rem 0.5rem;
+  background: #fff; border-left: 4px solid #5b6b7f; font-size: 0.875rem;
+}
+.demo-banner-blocked button { margin-left: 0.75rem; padding: 0.125rem 0.5rem; font-size: 0.8125rem; }

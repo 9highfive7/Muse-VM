@@ -46,6 +46,23 @@ if grep -rIli "x-api-key" frontend/dist; then
 else
   echo "ok: 'x-api-key' not in build output"
 fi
+# Static demo build (GitHub Pages), if one has been built: same checks.
+if [ -d frontend/dist-demo ]; then
+  for needle in "api.jquants.com" "JQUANTS_API_KEY" "fred.stlouisfed.org" "fredgraph"; do
+    if grep -rIl --fixed-strings "$needle" frontend/dist-demo; then
+      echo "FAIL: '$needle' found in demo build output"
+      status=1
+    else
+      echo "ok: '$needle' not in demo build output"
+    fi
+  done
+  if grep -rIli "x-api-key" frontend/dist-demo; then
+    echo "FAIL: 'x-api-key' found in demo build output"
+    status=1
+  else
+    echo "ok: 'x-api-key' not in demo build output"
+  fi
+fi
 if [ -n "$(git ls-files .env 2>/dev/null || true)" ]; then
   echo "FAIL: .env is tracked by git"
   status=1

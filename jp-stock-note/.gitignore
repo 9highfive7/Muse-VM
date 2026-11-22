@@ -16,3 +16,4 @@ __pycache__/
 # node / build output
 node_modules/
 frontend/dist/
+frontend/dist-demo/

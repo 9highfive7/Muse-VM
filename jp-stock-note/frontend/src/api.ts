@@ -699,6 +699,79 @@ export interface BusinessCardsResponse {
   cards: BusinessCard[];
 }
 
+// 「テクニカルで見る」(GET /api/stocks/{code}/technical-backtest). Every label and
+// sentence comes from the server (content/technical_view.json, the one wording
+// file with the 要件 6.1 exception, see wording.TECH_VIEW_ALLOWED); the screen only displays.
+export type TechIndicator = "rsi" | "macd" | "ma_cross" | "bollinger";
+export type TechSide = "buy" | "sell";
+
+export interface TechBacktestEntry {
+  date: string;
+  exit_date: string;
+  entry_close: number;
+  exit_close: number;
+  return_pct: number;
+  result: "win" | "loss" | "draw";
+}
+
+export interface TechBacktestCell {
+  side: TechSide;
+  side_label: string;
+  horizon: number;
+  signals: number;
+  samples: number;
+  pending: number;
+  wins: number;
+  losses: number;
+  draws: number;
+  win_rate_pct: number | null;
+  win_rate_display: number | null;
+  avg_return_pct: number | null;
+  avg_return_display: string | null;
+  small_sample: boolean;
+  note: string;
+  entries: TechBacktestEntry[];
+}
+
+export interface TechBacktestResponse {
+  code: string;
+  state: "ok" | "no_data";
+  as_of: string | null;
+  indicator: TechIndicator;
+  indicators: { key: TechIndicator; label: string }[];
+  labels: Record<string, string>;
+  evaluation: {
+    side: "buy" | "sell" | "neutral" | "unavailable";
+    text: string;
+    basis: string;
+    values: Record<string, unknown>;
+    as_of: string | null;
+  };
+  headline: {
+    kind: "rate" | "no_samples" | "neutral" | "unavailable";
+    label: string | null;
+    text: string;
+    detail: string | null;
+    win_rate_pct: number | null;
+    small_sample: boolean | null;
+    small_sample_text: string | null;
+  };
+  backtest: null | {
+    period: { from: string; to: string; bars: number; text: string; price: string };
+    horizons: number[];
+    main_horizon: number;
+    min_samples: number;
+    signal_rule: string;
+    raw_signal_days: Record<TechSide, number>;
+    results: Record<TechSide, TechBacktestCell[]>;
+    baseline: { horizon: number; days: number; up_days: number; up_pct: number | null }[];
+    costs_included: boolean;
+    conditions: string[];
+    table_caption: string;
+  };
+  notes: string[];
+}
+
 export class ApiError extends Error {
   status: number;
   constructor(status: number, message: string) {
@@ -733,6 +806,10 @@ export const api = {
     request<ChartResponse>(`/api/stocks/${encodeURIComponent(code)}/chart?range=${range}`),
   technicals: (code: string, range: RangeKey) =>
     request<TechnicalsResponse>(`/api/stocks/${encodeURIComponent(code)}/technicals?range=${range}`),
+  technicalBacktest: (code: string, indicator: TechIndicator) =>
+    request<TechBacktestResponse>(
+      `/api/stocks/${encodeURIComponent(code)}/technical-backtest?indicator=${indicator}`,
+    ),
   pricePosition: (code: string) =>
     request<PriceCard>(`/api/stocks/${encodeURIComponent(code)}/cards/price-position`),
   glossary: (term: string, code?: string) =>

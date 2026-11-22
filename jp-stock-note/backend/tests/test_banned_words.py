@@ -121,12 +121,52 @@ def test_frontend_static_text_is_clean():
 
 def test_every_content_file_is_clean():
     """All server-side wording files, incl. Phase 4 memo_form.json (S4),
-    watch_rules.json (ウォッチリスト) and about.json (S0 初回説明・拡張版免責)."""
+    watch_rules.json (ウォッチリスト) and about.json (S0 初回説明・拡張版免責).
+
+    例外：technical_view.json（「テクニカルで見る」ブロック専用）だけは、利用者の
+    明示の要望で「勝率」を含む。そのファイルはここでは除外し、下の
+    test_exception_file_allows_only_listed_words で「許可した語以外は禁止」を確認する。
+    新しいファイルがこの除外に紛れ込まないよう、除外は名前で固定している。"""
     files = sorted(wording.CONTENT_DIR.glob("*.json"))
     names = {f.name for f in files}
     assert {"memo_form.json", "watch_rules.json", "about.json", "templates.json"} <= names
+    assert set(wording.EXCEPTION_CONTENT_FILES) == {"technical_view.json"}
     for f in files:
+        if f.name in wording.EXCEPTION_CONTENT_FILES:
+            continue
         assert_clean(strings(json.loads(f.read_text(encoding="utf-8"))), f.name)
+
+
+# --------------------------------------------------------------------------- 例外：「テクニカルで見る」
+
+def test_exception_is_limited_to_win_rate_word():
+    """The exception allows exactly 「勝率」. 「買いです／売りです」 were never on
+    the list; 「買いシグナル」「的中」「チャンス」 etc. stay banned even in the block."""
+    assert wording.TECH_VIEW_ALLOWED == ("勝率",)
+    assert wording.find_banned("勝率60%", allow=wording.TECH_VIEW_ALLOWED) == []
+    for w in ("買いシグナル", "売りシグナル", "的中", "チャンス", "上がる可能性", "おすすめ"):
+        assert wording.find_banned(f"文{w}", allow=wording.TECH_VIEW_ALLOWED) == [w]
+
+
+def test_exception_file_allows_only_listed_words():
+    for name, allowed in wording.EXCEPTION_CONTENT_FILES.items():
+        raw = json.loads((wording.CONTENT_DIR / name).read_text(encoding="utf-8"))
+        for s in strings(raw):
+            bad = find_banned(s, allow=allowed)
+            assert not bad, f"{name}: banned {bad} (beyond the exception {allowed}) in {s!r}"
+
+
+def test_exception_words_appear_nowhere_else():
+    """「勝率」 may appear only in the exception file. Every other content file,
+    the frontend sources and the other endpoints' payloads are checked with the
+    full list above; here: the win-rate templates are not reachable through the
+    normal templates.json renderer, and the exception renderer still rejects
+    any other banned word."""
+    assert "headline.rate" not in wording.templates()
+    assert all(k not in wording.templates() for k in wording.tech_view_templates() if "勝率" in
+               wording.tech_view_templates()[k])
+    with pytest.raises(BannedWordError):
+        wording.render_tech_view("eval.sentence", short="RSI", verdict="今がチャンス")
 
 
 def test_phase4_generated_sentences_are_clean(make_client, make_settings):

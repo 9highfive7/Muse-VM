@@ -39,8 +39,37 @@ class BannedWordError(ValueError):
     pass
 
 
-def find_banned(text: str) -> list[str]:
-    return [w for w in BANNED_WORDS if w in text]
+def find_banned(text: str, allow: tuple[str, ...] = ()) -> list[str]:
+    return [w for w in BANNED_WORDS if w in text and w not in allow]
+
+
+# --------------------------------------------------------------------------- 例外：テクニカルで見る
+# 「テクニカルで見る」ブロック（technical_view.py）だけは、利用者の明示の要望により
+# 「買いです／売りです」「勝率」を表示する（要件 6.1 の例外。2026-11-22 指定）。
+# その文言はこのファイルだけに置き、他の画面の templates.json とは混ぜない。
+# 例外として許すのは EXCEPTION_ALLOWED の語だけで、残りの禁止語（「買いシグナル」
+# 「チャンス」「予想される」など）はこのブロックでも従来どおり禁止する。
+# 「買いです／売りです」はもともと禁止語リストに無いため許可リストには入らない。
+TECH_VIEW_PATH = CONTENT_DIR / "technical_view.json"
+TECH_VIEW_ALLOWED: tuple[str, ...] = ("勝率",)
+# file name -> words allowed in it (used by tests/test_banned_words.py)
+EXCEPTION_CONTENT_FILES: dict[str, tuple[str, ...]] = {TECH_VIEW_PATH.name: TECH_VIEW_ALLOWED}
+
+
+@lru_cache(maxsize=1)
+def tech_view_templates() -> dict[str, str]:
+    data = json.loads(TECH_VIEW_PATH.read_text(encoding="utf-8"))
+    return {k: v for k, v in data.items() if not k.startswith("_")}
+
+
+def render_tech_view(key: str, **values) -> str:
+    """Like render(), for the 「テクニカルで見る」 block only: banned words other
+    than TECH_VIEW_ALLOWED still raise."""
+    text = tech_view_templates()[key].format(**values)
+    bad = find_banned(text, allow=TECH_VIEW_ALLOWED)
+    if bad:
+        raise BannedWordError(f"banned words {bad} in rendered technical-view template {key!r}")
+    return text
 
 
 @lru_cache(maxsize=1)

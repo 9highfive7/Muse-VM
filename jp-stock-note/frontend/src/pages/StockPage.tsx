@@ -37,6 +37,7 @@ import {
 import { Link } from "../router";
 import { StockMemoSection } from "../components/Memo";
 import { StockWatchControl } from "../components/Watch";
+import TechnicalView from "../components/TechnicalView";
 
 const yen = (v: number) => v.toLocaleString("ja-JP", { maximumFractionDigits: 2 });
 const signed = (v: number, digits: number) =>
@@ -810,6 +811,9 @@ function StagePanels({ chart, tech, code }: { chart: ChartResponse; tech: Techni
           </p>
         </details>
       </Stage>
+
+      {/* 既存の4段階表示はそのまま。その下に「テクニカルで見る」（今の評価＋過去の検証） */}
+      <TechnicalView code={code} />
     </section>
   );
 }
